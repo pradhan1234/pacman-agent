@@ -72,22 +72,68 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
+
 def depthFirstSearch(problem):
-    """
-    Search the deepest nodes in the search tree first.
+    
+    # Search the deepest nodes in the search tree first.
 
-    Your search algorithm needs to return a list of actions that reaches the
-    goal. Make sure to implement a graph search algorithm.
+    # Your search algorithm needs to return a list of actions that reaches the
+    # goal. Make sure to implement a graph search algorithm.
 
-    To get started, you might want to try some of these simple commands to
-    understand the search problem that is being passed in:
+    # To get started, you might want to try some of these simple commands to
+    # understand the search problem that is being passed in:
 
-    print "Start:", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
-    """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # print "Start:", problem.getStartState()
+    # print "Is the start a goal?", problem.isGoalState(problem.getStartState())
+    # print "Start's successors:", problem.getSuccessors(problem.getStartState())
+    
+	"*** YOUR CODE HERE ***"
+	openList = util.Stack()
+	closedList = set()
+
+	currentState = problem.getStartState()
+	pathUntilNow = []
+	currentNode = (currentState, pathUntilNow)
+	openList.push(currentNode)
+	# openList.push((problem.getStartState(), []))
+
+	# print openList
+	# print "Adding start node to the openList"
+
+	while not openList.isEmpty():
+		# currentState, pathUntilNow  = openList.pop()
+		currentNode = openList.pop()
+		currentState = currentNode[0]
+		pathUntilNow = currentNode[1]
+
+		# print "currentState: ", currentState
+		# print "pathUntilNow: ", pathUntilNow
+
+		if currentState in closedList:
+			# print "currentState already in closedList"
+			continue
+
+		closedList.add(currentState)
+		# print "Added current state to closedList as visited"
+
+		if problem.isGoalState(currentState):
+			# print "Goal reached", pathUntilNow
+			return pathUntilNow
+
+		# print "expanding", currentState
+		successors = problem.getSuccessors(currentState)
+		# print successors
+
+		for nextState, nextAction, nextActionCost in successors:#problem.getSuccessors(currentState):
+			# print "state:", nextState
+			# print "pathUntilNow", pathUntilNow
+			# print "next action", nextAction
+			nextNode = (nextState, pathUntilNow + [nextAction])
+			openList.push(nextNode)
+			# openList.push((nextState, pathUntilNow + [nextAction]))
+	return []	
+	util.raiseNotDefined()
+
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
