@@ -139,22 +139,26 @@ def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
     openList = util.Queue()
-    closedList = set()
+    closedList = []
 
     currentState = problem.getStartState()
     pathUntilNow = []
     currentNode = (currentState, pathUntilNow)
     openList.push(currentNode)
 
+    # print "init", closedList
+
     while not openList.isEmpty():
     	currentNode = openList.pop()
     	currentState = currentNode[0]
     	pathUntilNow = currentNode[1]
 
+        # print "before", closedList
     	if currentState in closedList:
     		continue
+        # print "after", closedList
 
-    	closedList.add(currentState)
+    	closedList.append(currentState)
 
     	if problem.isGoalState(currentState):
     		return pathUntilNow
@@ -219,7 +223,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     
     "*** YOUR CODE HERE ***"
     openList = util.PriorityQueue()
-    closedList = set()
+    closedList = []
 
     currentState = problem.getStartState()
     pathUntilNow = []
@@ -241,7 +245,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
    		if problem.isGoalState(currentState):
    			return pathUntilNow
 
-   		closedList.add(currentState)
+   		closedList.append(currentState)
 
    		successors = problem.getSuccessors(currentState)
 

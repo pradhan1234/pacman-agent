@@ -291,7 +291,7 @@ class CornersProblem(search.SearchProblem):
         "*** YOUR CODE HERE ***"
         self.corner_status = []
         for corner in self.corners:
-            self.corner_status.append((corner, False))
+            self.corner_status.append([corner, False])
 
     def getStartState(self):
         """
@@ -299,7 +299,7 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        return (self.startingPosition, self.corner_status)
+        return [self.startingPosition, self.corner_status]
         util.raiseNotDefined()
 
     def isGoalState(self, state):
@@ -313,6 +313,12 @@ class CornersProblem(search.SearchProblem):
                 return False
         return True
         util.raiseNotDefined()
+
+    def mark_corners(self, x, y, corner_statuses):
+        for corner_status in corner_statuses:
+            corner = corner_status[0]
+            if corner[0] == x and corner[1] == y:
+                corner_status[1] = True
 
     def getSuccessors(self, state):
         """
@@ -344,9 +350,11 @@ class CornersProblem(search.SearchProblem):
                 corner_status  = copy.deepcopy(state[1])
                 #mark
 
-                for corner, status in corner_status:
-                    if corner[0]==x and corner[1]==y:
-                        status = True
+                # for corner, status in corner_status:
+                #     if corner[0]==x and corner[1]==y:
+                #         # corner_status[1] = True
+                #         status = True
+                self.mark_corners(nextx, nexty, corner_status)
 
                 nextState = ((nextx, nexty), corner_status)
                 successors.append((nextState, action, 1))
@@ -501,7 +509,40 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
+    distances = []
+    foodGridList = foodGrid.asList()
+    foodState = FoodMazeState(problem.walls,position, len(foodGridList), len(foodGridList) > 0)
+
+    for foodItem in foodGridList:
+        distances.append(mazeDistance(position, foodItem, foodState))
+
+
+    if len(distances) == 0 :
+        return 0
+    else:
+        return max(distances)
+
+
     return 0
+
+class FoodMazeState:
+    def __init__(self, walls, pacmanPosition, countFood, hasFood):
+        self.walls = walls
+        self.pacmanPosition = pacmanPosition
+        self.countFood = countFood
+        self.hasFood = hasFood
+
+    def getWalls(self):
+        return self.walls
+
+    def getPacmanPosition(self):
+        return self.pacmanPosition
+
+    def getNumFood(self):
+        return self.countFood
+
+    def hasFood(self):
+        return self.hasFood
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -532,6 +573,12 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
+        startPosition = gameState.getPacmanPosition()
+        food = gameState.getFood()
+        walls = gameState.getWalls()
+        problem = AnyFoodSearchProblem(gameState)
+
+        return search.aStarSearch(problem)
         util.raiseNotDefined()
 
 class AnyFoodSearchProblem(PositionSearchProblem):
@@ -568,6 +615,11 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
+        foodList = self.food.asList()
+
+        distance, food = min(((get_manhattan_distance(state, foodItem), foodItem) for foodItem in foodList))
+
+        return (state == food)
         util.raiseNotDefined()
 
 def mazeDistance(point1, point2, gameState):
