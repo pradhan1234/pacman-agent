@@ -89,48 +89,31 @@ def depthFirstSearch(problem):
     
 	"*** YOUR CODE HERE ***"
 	openList = util.Stack()
-	closedList = set()
+	closedList = []
 
 	currentState = problem.getStartState()
 	pathUntilNow = []
 	currentNode = (currentState, pathUntilNow)
 	openList.push(currentNode)
-	# openList.push((problem.getStartState(), []))
-
-	# print openList
-	# print "Adding start node to the openList"
 
 	while not openList.isEmpty():
-		# currentState, pathUntilNow  = openList.pop()
 		currentNode = openList.pop()
 		currentState = currentNode[0]
 		pathUntilNow = currentNode[1]
 
-		# print "currentState: ", currentState
-		# print "pathUntilNow: ", pathUntilNow
-
 		if currentState in closedList:
-			# print "currentState already in closedList"
 			continue
 
-		closedList.add(currentState)
-		# print "Added current state to closedList as visited"
+		closedList.append(currentState)
 
 		if problem.isGoalState(currentState):
-			# print "Goal reached", pathUntilNow
 			return pathUntilNow
 
-		# print "expanding", currentState
 		successors = problem.getSuccessors(currentState)
-		# print successors
 
-		for nextState, nextAction, nextActionCost in successors:#problem.getSuccessors(currentState):
-			# print "state:", nextState
-			# print "pathUntilNow", pathUntilNow
-			# print "next action", nextAction
+		for nextState, nextAction, nextActionCost in successors:
 			nextNode = (nextState, pathUntilNow + [nextAction])
 			openList.push(nextNode)
-			# openList.push((nextState, pathUntilNow + [nextAction]))
 	return []	
 	util.raiseNotDefined()
 
@@ -146,17 +129,13 @@ def breadthFirstSearch(problem):
     currentNode = (currentState, pathUntilNow)
     openList.push(currentNode)
 
-    # print "init", closedList
-
     while not openList.isEmpty():
     	currentNode = openList.pop()
     	currentState = currentNode[0]
     	pathUntilNow = currentNode[1]
 
-        # print "before", closedList
     	if currentState in closedList:
     		continue
-        # print "after", closedList
 
     	closedList.append(currentState)
 
@@ -178,7 +157,7 @@ def uniformCostSearch(problem):
     "*** YOUR CODE HERE ***"
 
     openList = util.PriorityQueue()
-    closedList = set()
+    closedList = []
 
     currentState = problem.getStartState()
     pathUntilNow = []
@@ -198,17 +177,15 @@ def uniformCostSearch(problem):
     	if problem.isGoalState(currentState):
     		return pathUntilNow
 
-    	closedList.add(currentState)
+    	closedList.append(currentState)
 
     	successors = problem.getSuccessors(currentState)
 
     	for nextState, nextAction, nextActionCost in successors:
     		nextNode = (nextState, pathUntilNow + [nextAction], pathCost+nextActionCost)
     		openList.update(nextNode, pathCost+nextActionCost)
+    
     return []
-
-
-
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):

@@ -289,6 +289,7 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
+        #vector with eaxh corner and its visited status, False by default
         self.corner_status = []
         for corner in self.corners:
             self.corner_status.append([corner, False])
@@ -299,6 +300,7 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
+        #initial state with start position and corner status.
         return [self.startingPosition, self.corner_status]
         util.raiseNotDefined()
 
@@ -315,6 +317,7 @@ class CornersProblem(search.SearchProblem):
         util.raiseNotDefined()
 
     def mark_corners(self, x, y, corner_statuses):
+        #function to mark corner as visited, i.e. setting status to True
         for corner_status in corner_statuses:
             corner = corner_status[0]
             if corner[0] == x and corner[1] == y:
@@ -348,12 +351,6 @@ class CornersProblem(search.SearchProblem):
             hitsWall = self.walls[nextx][nexty]
             if not hitsWall:
                 corner_status  = copy.deepcopy(state[1])
-                #mark
-
-                # for corner, status in corner_status:
-                #     if corner[0]==x and corner[1]==y:
-                #         # corner_status[1] = True
-                #         status = True
                 self.mark_corners(nextx, nexty, corner_status)
 
                 nextState = ((nextx, nexty), corner_status)
@@ -397,6 +394,8 @@ def cornersHeuristic(state, problem):
     corner_status = state[1]
     distanceList = []
 
+    #get distances of all unvisited corners
+
     for corner, status in corner_status:
         if not status:
             currentPosition = state[0]
@@ -406,7 +405,6 @@ def cornersHeuristic(state, problem):
         return 0
     else:
         return max(distanceList)
-
 
     return 0 # Default to trivial solution
 
@@ -513,6 +511,7 @@ def foodHeuristic(state, problem):
     foodGridList = foodGrid.asList()
     foodState = FoodMazeState(problem.walls,position, len(foodGridList), len(foodGridList) > 0)
 
+    #get maze distances
     for foodItem in foodGridList:
         distances.append(mazeDistance(position, foodItem, foodState))
 
